@@ -34,11 +34,13 @@ int main()
 			system("pause");
 			system("cls");
 		}
-
+		
 		cout << "According to the formula of left rectangle the integral is ";
-		cout << TheNumberOfPartitionsInLeftRectangle(eps, a, b, n) << endl;
+		n = TheNumberOfPartitionsInLeftRectangle(eps, a, b, n);
+		cout << LeftRectangle(a, b, n) << endl;
 		cout << endl << "According to the formula of right rectangle the integral is ";
-		cout << TheNumberOfPartitionsInRightRectangle(eps, a, b, n) << endl;
+		n = TheNumberOfPartitionsInRightRectangle(eps, a, b, n);
+		cout << RightRectangle(a, b, n) << endl;
 
 		char yes;
 		cout << endl << "If you would like to continue, please, press y or Y " << endl;
@@ -92,7 +94,7 @@ double LeftRectangle(double a, double b, int n)
 		integral += Formula(t);
 		t += step;
 	}
-	integral *= step;
+	integral *= step; 
 	return integral;
 }
 
