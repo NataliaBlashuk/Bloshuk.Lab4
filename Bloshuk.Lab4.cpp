@@ -6,9 +6,10 @@ using namespace std;
 bool IsDataValid(double, double, double, int);
 double LeftRectangle(double, double, int);
 double RightRectangle(double, double, int);
-double Formula(double);
-int TheNumberOfPartitionsInLeftRectangle(double, double, double, int);
-int TheNumberOfPartitionsInRightRectangle(double, double, double, int);
+typedef double(*Formula)(double, double, int);
+double TheNumberOfPartitionsInLeftRectangle(double, double, double, int, Formula);
+double TheNumberOfPartitionsInRightRectangle(double, double, double, int, Formula);
+bool Continue(char);
 
 
 int main()
@@ -18,6 +19,7 @@ int main()
 		system("cls");
 		double eps;
 		int a, b, n;
+		char yes = 'k';
 		while (true)
 		{
 			cout << "Enter the epsilon" << endl;
@@ -36,20 +38,28 @@ int main()
 		}
 		
 		cout << "According to the formula of left rectangle the integral is ";
-		n = TheNumberOfPartitionsInLeftRectangle(eps, a, b, n);
-		cout << LeftRectangle(a, b, n) << endl;
+		Formula formula = LeftRectangle;
+		cout << TheNumberOfPartitionsInLeftRectangle(eps, a, b, n, formula) << endl;
 		cout << endl << "According to the formula of right rectangle the integral is ";
-		n = TheNumberOfPartitionsInRightRectangle(eps, a, b, n);
-		cout << RightRectangle(a, b, n) << endl;
+		formula = RightRectangle;
+		cout << TheNumberOfPartitionsInRightRectangle(eps, a, b, n, formula) << endl;
+		system("pause");
 
-		char yes;
-		cout << endl << "If you would like to continue, please, press y or Y " << endl;
-		cin >> yes;
-		if (yes == 'y' || yes == 'Y')
+		if(Continue(yes))
 			continue;
 		break;
 	}
 	return 0;
+}
+
+bool Continue(char)
+{
+	char yes;
+	cout << endl << "If you would like to continue, please, press y or Y " << endl;
+	cin >> yes;
+	if (yes == 'y' || yes == 'Y')
+		return true;
+	return false;
 }
 
 bool IsDataValid(double eps, double a, double b, int n)
@@ -60,38 +70,40 @@ bool IsDataValid(double eps, double a, double b, int n)
 	return true;
 }
 
-int TheNumberOfPartitionsInLeftRectangle(double eps, double a, double b, int n)
+double TheNumberOfPartitionsInLeftRectangle(double eps, double a, double b, int n, Formula formula)
 {
 	double prev = 0, next = 1;
 	while (fabs(prev - next) > eps)
 	{
-		prev = LeftRectangle(a, b, n);
-		next = LeftRectangle(a, b, 2 * n);
+		prev = formula(a, b, n);
+		next = formula(a, b, 2 * n);
 		n = 2 * n;
 	}
-	return n;
+	double integral = formula(a, b, n);
+	return integral;
 }
 
-int TheNumberOfPartitionsInRightRectangle(double eps, double a, double b, int n)
+double TheNumberOfPartitionsInRightRectangle(double eps, double a, double b, int n, Formula formula)
 {
 	double prev = 0, next = 1;
 	while (fabs(prev - next) > eps)
 	{
-		prev = RightRectangle(a, b, n);
-		next = RightRectangle(a, b, 2 * n);
+		prev = formula(a, b, n);
+		next = formula(a, b, 2 * n);
 		n = 2 * n;
 	}
-	return n;
+	double integral = formula(a, b, n);
+	return integral;
 }
 
 double LeftRectangle(double a, double b, int n)
 {
 	double step = (b - a) / n;
-	double integral = 0;
 	double t = a;
+	double integral = (sin(t)/t);
 	while (t < b)
 	{
-		integral += Formula(t);
+		integral += sin(t)/t;
 		t += step;
 	}
 	integral *= step; 
@@ -101,18 +113,14 @@ double LeftRectangle(double a, double b, int n)
 double RightRectangle(double a, double b, int n)
 {
 	double step = (b - a) / n;
-	double integral = 0;
 	double t = a + step;
+	double integral = (sin(t)/t);
 	while (t < b)
 	{
-		integral += Formula(t);
+		integral += sin(t)/t;
 		t += step;
 	}
 	integral *= step;
 	return integral;
 }
 
-double Formula(double x)
-{
-	return sin(x) / x;
-}
