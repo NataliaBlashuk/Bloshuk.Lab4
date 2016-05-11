@@ -84,19 +84,6 @@ double TheNumberOfPartitions(double eps, double a, double b, int n, Formula form
 	return integral;
 }
 
-/*double TheNumberOfPartitionsInRightRectangle(double eps, double a, double b, int n, Formula formula)
-{
-	double prev = 0, next = 1;
-	while (fabs(prev - next) > eps)
-	{
-		prev = formula(a, b, n);
-		next = formula(a, b, 2 * n);
-		n = 2 * n;
-	}
-	double integral = formula(a, b, n);
-	return integral;
-}*/
-
 double LeftRectangle(double a, double b, int n, Expression expr)
 {
 	double step = (b - a) / n;
