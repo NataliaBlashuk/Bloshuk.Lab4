@@ -4,13 +4,13 @@
 using namespace std;
 
 bool IsDataValid(double, double, double, int);
-double LeftRectangle(double, double, int);
-double RightRectangle(double, double, int);
-typedef double(*Formula)(double, double, int);
-double TheNumberOfPartitionsInLeftRectangle(double, double, double, int, Formula);
-double TheNumberOfPartitionsInRightRectangle(double, double, double, int, Formula);
+typedef double(*Expression)(double);
+typedef double(*Formula)(double, double, int, Expression);
+double LeftRectangle(double, double, int, Expression);
+double RightRectangle(double, double, int, Expression);
+double TheNumberOfPartitions(double, double, double, int, Formula, Expression);
+double Sinus(double);
 bool Continue(char);
-
 
 int main()
 {
@@ -36,18 +36,19 @@ int main()
 			system("pause");
 			system("cls");
 		}
-		
+
 		cout << "According to the formula of left rectangle the integral is ";
+		Expression expr = Sinus;
 		Formula formula = LeftRectangle;
-		cout << TheNumberOfPartitionsInLeftRectangle(eps, a, b, n, formula) << endl;
+		cout << TheNumberOfPartitions(eps, a, b, n, formula, Sinus) << endl;
 		cout << endl << "According to the formula of right rectangle the integral is ";
 		formula = RightRectangle;
-		cout << TheNumberOfPartitionsInRightRectangle(eps, a, b, n, formula) << endl;
-		system("pause");
+		cout << TheNumberOfPartitions(eps, a, b, n, formula, Sinus) << endl;
 
-		if(Continue(yes))
+		if (Continue(yes))
 			continue;
 		break;
+		system("pause");
 	}
 	return 0;
 }
@@ -70,7 +71,20 @@ bool IsDataValid(double eps, double a, double b, int n)
 	return true;
 }
 
-double TheNumberOfPartitionsInLeftRectangle(double eps, double a, double b, int n, Formula formula)
+double TheNumberOfPartitions(double eps, double a, double b, int n, Formula formula, Expression expr)
+{
+	double prev = 0, next = 1;
+	while (fabs(prev - next) > eps)
+	{
+		prev = formula(a, b, n, expr);
+		next = formula(a, b, 2 * n, expr);
+		n = 2 * n;
+	}
+	double integral = formula(a, b, n, expr);
+	return integral;
+}
+
+/*double TheNumberOfPartitionsInRightRectangle(double eps, double a, double b, int n, Formula formula)
 {
 	double prev = 0, next = 1;
 	while (fabs(prev - next) > eps)
@@ -81,46 +95,40 @@ double TheNumberOfPartitionsInLeftRectangle(double eps, double a, double b, int 
 	}
 	double integral = formula(a, b, n);
 	return integral;
-}
+}*/
 
-double TheNumberOfPartitionsInRightRectangle(double eps, double a, double b, int n, Formula formula)
-{
-	double prev = 0, next = 1;
-	while (fabs(prev - next) > eps)
-	{
-		prev = formula(a, b, n);
-		next = formula(a, b, 2 * n);
-		n = 2 * n;
-	}
-	double integral = formula(a, b, n);
-	return integral;
-}
-
-double LeftRectangle(double a, double b, int n)
+double LeftRectangle(double a, double b, int n, Expression expr)
 {
 	double step = (b - a) / n;
 	double t = a;
-	double integral = (sin(t)/t);
+	double integral = expr(t);
 	while (t < b)
 	{
-		integral += sin(t)/t;
-		t += step;
-	}
-	integral *= step; 
-	return integral;
-}
-
-double RightRectangle(double a, double b, int n)
-{
-	double step = (b - a) / n;
-	double t = a + step;
-	double integral = (sin(t)/t);
-	while (t < b)
-	{
-		integral += sin(t)/t;
+		integral += expr(t);
 		t += step;
 	}
 	integral *= step;
 	return integral;
 }
+
+double RightRectangle(double a, double b, int n, Expression expr)
+{
+	double step = (b - a) / n;
+	double t = a + step;
+	double integral = expr(t);
+	while (t < b)
+	{
+		integral += expr(t);
+		t += step;
+	}
+	integral *= step;
+	return integral;
+}
+
+double Sinus(double x)
+{
+	return sin(x) / x;
+}
+
+
 
