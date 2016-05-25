@@ -40,10 +40,10 @@ int main()
 		cout << "According to the formula of left rectangle the integral is ";
 		Expression expr = Sinus;
 		Formula formula = LeftRectangle;
-		cout << TheNumberOfPartitions(eps, a, b, n, formula, Sinus) << endl;
+		cout << TheNumberOfPartitions(eps, a, b, n, formula, expr) << endl;
 		cout << endl << "According to the formula of right rectangle the integral is ";
 		formula = RightRectangle;
-		cout << TheNumberOfPartitions(eps, a, b, n, formula, Sinus) << endl;
+		cout << TheNumberOfPartitions(eps, a, b, n, formula, expr) << endl;
 
 		if (Continue(yes))
 			continue;
